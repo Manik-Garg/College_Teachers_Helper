@@ -210,219 +210,219 @@ class _HomeState extends State<Home> {
                       SizedBox(
                         height: height * 0.05,
                       ),
-                      Container(
-                        height: height * 0.08,
-                        width: width * 0.8,
-                        padding: EdgeInsets.all(5),
-                        decoration: BoxDecoration(
-                            color: Colors.grey[500],
-                            border: Border.all(color: Colors.black, width: 2.0),
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(20))),
-                        child: FlatButton(
-                          child: Text(
-                            "Create Group",
-                            style: TextStyle(fontSize: 20),
-                          ),
-                          onPressed: () async {
-                            await showDialog(
-                                context: context,
-                                builder: (context) => Dialog(
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(20.0))),
-                                      child: Container(
-                                        height: height * 0.3,
-                                        width: width * 0.8,
-                                        decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(20))),
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: [
-                                            Container(
-                                              decoration: BoxDecoration(
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(20)),
-                                                border: Border.all(
-                                                    color: Colors.indigo[500],
-                                                    width: 2),
-                                                color: Colors.white,
-                                              ),
-                                              padding: EdgeInsets.all(10),
-                                              child: TextField(
-                                                onChanged: (value) {
-                                                  setState(() {
-                                                    groupName = value;
-                                                  });
-                                                },
-                                                keyboardType:
-                                                    TextInputType.emailAddress,
-                                                decoration: InputDecoration(
-                                                  hintText: 'Enter Group Name',
-                                                  border: InputBorder.none,
-                                                ),
-                                              ),
-                                              width: width * 0.75,
-                                            ),
-                                            SizedBox(
-                                              height: 15,
-                                            ),
-                                            Container(
-                                              width: width * 0.75,
-                                              decoration: BoxDecoration(
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(20)),
-                                                color: Colors.indigo[300],
-                                              ),
-                                              padding: EdgeInsets.all(5),
-                                              child: FlatButton(
-                                                child: Text(
-                                                  "Create Group",
-                                                  style:
-                                                      TextStyle(fontSize: 20),
-                                                ),
-                                                onPressed: () async {
-                                                  if (groupName == "" ||
-                                                      groupName == null) {
-                                                    await showDialog(
-                                                        context: context,
-                                                        builder: (context) =>
-                                                            AlertDialog(
-                                                              title: Text(
-                                                                  "Please Enter correct name."),
-                                                              actions: [
-                                                                FlatButton(
-                                                                  child: Text(
-                                                                      "Ok"),
-                                                                  onPressed:
-                                                                      () {
-                                                                    Navigator.pop(
-                                                                        context);
-                                                                  },
-                                                                )
-                                                              ],
-                                                            ));
-                                                  } else {
-                                                    setState(() {
-                                                      isLoaded = false;
-                                                    });
-                                                    String teacherEmail =
-                                                        FirebaseAuth.instance
-                                                            .currentUser.email;
-                                                    final teacherName =
-                                                        await FirebaseFirestore
-                                                            .instance
-                                                            .collection(
-                                                                "teachers")
-                                                            .doc(teacherEmail)
-                                                            .get()
-                                                            .then((value) =>
-                                                                value.data()[
-                                                                    "name"]);
-                                                    final Data =
-                                                        await FirebaseFirestore
-                                                            .instance
-                                                            .collection("items")
-                                                            .doc("classes")
-                                                            .get()
-                                                            .then((value) =>
-                                                                value.data());
-                                                    List<dynamic> classes =
-                                                        Data["classes"];
-                                                    bool already = false;
-                                                    for (int j = 0;
-                                                        j < classes.length;
-                                                        j++) {
-                                                      if (classes[j][
-                                                                  "groupName"] ==
-                                                              groupName &&
-                                                          classes[j][
-                                                                  "teacherID"] ==
-                                                              teacherEmail) {
-                                                        already = true;
-                                                        break;
-                                                      }
-                                                    }
-                                                    if (!already) {
-                                                      classes.add({
-                                                        "teacherID":
-                                                            teacherEmail,
-                                                        "groupName": groupName,
-                                                        "teacherName":
-                                                            teacherName,
-                                                        "uploads": [],
-                                                        "students": []
-                                                      });
-                                                      await FirebaseFirestore
-                                                          .instance
-                                                          .collection("items")
-                                                          .doc("classes")
-                                                          .update({
-                                                        "classes": classes
-                                                      }).whenComplete(() async {
-                                                        await showDialog(
-                                                            context: context,
-                                                            builder:
-                                                                (context) =>
-                                                                    AlertDialog(
-                                                                      title: Text(
-                                                                          "Group $groupName has been created."),
-                                                                      actions: [
-                                                                        FlatButton(
-                                                                          child:
-                                                                              Text("Ok"),
-                                                                          onPressed:
-                                                                              () {
-                                                                            Navigator.pop(context);
-                                                                          },
-                                                                        )
-                                                                      ],
-                                                                    ));
-                                                        setState(() {
-                                                          isLoaded = true;
-                                                        });
-                                                      });
-                                                    } else {
-                                                      await showDialog(
-                                                          context: context,
-                                                          builder: (context) =>
-                                                              AlertDialog(
-                                                                title: Text(
-                                                                    "This Group Name already exist. Please enter another name."),
-                                                                actions: [
-                                                                  FlatButton(
-                                                                    child: Text(
-                                                                        "Ok"),
-                                                                    onPressed:
-                                                                        () {
-                                                                      setState(
-                                                                          () {
-                                                                        isLoaded =
-                                                                            true;
-                                                                      });
-                                                                      Navigator.pop(
-                                                                          context);
-                                                                    },
-                                                                  )
-                                                                ],
-                                                              ));
-                                                    }
-                                                  }
-                                                },
-                                              ),
-                                            )
-                                          ],
-                                        ),
-                                      ),
-                                    ));
-                          },
-                        ),
-                      ),
+                      // Container(
+                      //   height: height * 0.08,
+                      //   width: width * 0.8,
+                      //   padding: EdgeInsets.all(5),
+                      //   decoration: BoxDecoration(
+                      //       color: Colors.grey[500],
+                      //       border: Border.all(color: Colors.black, width: 2.0),
+                      //       borderRadius:
+                      //           BorderRadius.all(Radius.circular(20))),
+                      //   child: FlatButton(
+                      //     child: Text(
+                      //       "Create Group",
+                      //       style: TextStyle(fontSize: 20),
+                      //     ),
+                      //     onPressed: () async {
+                      //       await showDialog(
+                      //           context: context,
+                      //           builder: (context) => Dialog(
+                      //                 shape: RoundedRectangleBorder(
+                      //                     borderRadius: BorderRadius.all(
+                      //                         Radius.circular(20.0))),
+                      //                 child: Container(
+                      //                   height: height * 0.3,
+                      //                   width: width * 0.8,
+                      //                   decoration: BoxDecoration(
+                      //                       color: Colors.white,
+                      //                       borderRadius: BorderRadius.all(
+                      //                           Radius.circular(20))),
+                      //                   child: Column(
+                      //                     mainAxisAlignment:
+                      //                         MainAxisAlignment.center,
+                      //                     crossAxisAlignment:
+                      //                         CrossAxisAlignment.center,
+                      //                     children: [
+                      //                       Container(
+                      //                         decoration: BoxDecoration(
+                      //                           borderRadius: BorderRadius.all(
+                      //                               Radius.circular(20)),
+                      //                           border: Border.all(
+                      //                               color: Colors.indigo[500],
+                      //                               width: 2),
+                      //                           color: Colors.white,
+                      //                         ),
+                      //                         padding: EdgeInsets.all(10),
+                      //                         child: TextField(
+                      //                           onChanged: (value) {
+                      //                             setState(() {
+                      //                               groupName = value;
+                      //                             });
+                      //                           },
+                      //                           keyboardType:
+                      //                               TextInputType.emailAddress,
+                      //                           decoration: InputDecoration(
+                      //                             hintText: 'Enter Group Name',
+                      //                             border: InputBorder.none,
+                      //                           ),
+                      //                         ),
+                      //                         width: width * 0.75,
+                      //                       ),
+                      //                       SizedBox(
+                      //                         height: 15,
+                      //                       ),
+                      //                       Container(
+                      //                         width: width * 0.75,
+                      //                         decoration: BoxDecoration(
+                      //                           borderRadius: BorderRadius.all(
+                      //                               Radius.circular(20)),
+                      //                           color: Colors.indigo[300],
+                      //                         ),
+                      //                         padding: EdgeInsets.all(5),
+                      //                         child: FlatButton(
+                      //                           child: Text(
+                      //                             "Create Group",
+                      //                             style:
+                      //                                 TextStyle(fontSize: 20),
+                      //                           ),
+                      //                           onPressed: () async {
+                      //                             if (groupName == "" ||
+                      //                                 groupName == null) {
+                      //                               await showDialog(
+                      //                                   context: context,
+                      //                                   builder: (context) =>
+                      //                                       AlertDialog(
+                      //                                         title: Text(
+                      //                                             "Please Enter correct name."),
+                      //                                         actions: [
+                      //                                           FlatButton(
+                      //                                             child: Text(
+                      //                                                 "Ok"),
+                      //                                             onPressed:
+                      //                                                 () {
+                      //                                               Navigator.pop(
+                      //                                                   context);
+                      //                                             },
+                      //                                           )
+                      //                                         ],
+                      //                                       ));
+                      //                             } else {
+                      //                               setState(() {
+                      //                                 isLoaded = false;
+                      //                               });
+                      //                               String teacherEmail =
+                      //                                   FirebaseAuth.instance
+                      //                                       .currentUser.email;
+                      //                               final teacherName =
+                      //                                   await FirebaseFirestore
+                      //                                       .instance
+                      //                                       .collection(
+                      //                                           "teachers")
+                      //                                       .doc(teacherEmail)
+                      //                                       .get()
+                      //                                       .then((value) =>
+                      //                                           value.data()[
+                      //                                               "name"]);
+                      //                               final Data =
+                      //                                   await FirebaseFirestore
+                      //                                       .instance
+                      //                                       .collection("items")
+                      //                                       .doc("classes")
+                      //                                       .get()
+                      //                                       .then((value) =>
+                      //                                           value.data());
+                      //                               List<dynamic> classes =
+                      //                                   Data["classes"];
+                      //                               bool already = false;
+                      //                               for (int j = 0;
+                      //                                   j < classes.length;
+                      //                                   j++) {
+                      //                                 if (classes[j][
+                      //                                             "groupName"] ==
+                      //                                         groupName &&
+                      //                                     classes[j][
+                      //                                             "teacherID"] ==
+                      //                                         teacherEmail) {
+                      //                                   already = true;
+                      //                                   break;
+                      //                                 }
+                      //                               }
+                      //                               if (!already) {
+                      //                                 classes.add({
+                      //                                   "teacherID":
+                      //                                       teacherEmail,
+                      //                                   "groupName": groupName,
+                      //                                   "teacherName":
+                      //                                       teacherName,
+                      //                                   "uploads": [],
+                      //                                   "students": []
+                      //                                 });
+                      //                                 await FirebaseFirestore
+                      //                                     .instance
+                      //                                     .collection("items")
+                      //                                     .doc("classes")
+                      //                                     .update({
+                      //                                   "classes": classes
+                      //                                 }).whenComplete(() async {
+                      //                                   await showDialog(
+                      //                                       context: context,
+                      //                                       builder:
+                      //                                           (context) =>
+                      //                                               AlertDialog(
+                      //                                                 title: Text(
+                      //                                                     "Group $groupName has been created."),
+                      //                                                 actions: [
+                      //                                                   FlatButton(
+                      //                                                     child:
+                      //                                                         Text("Ok"),
+                      //                                                     onPressed:
+                      //                                                         () {
+                      //                                                       Navigator.pop(context);
+                      //                                                     },
+                      //                                                   )
+                      //                                                 ],
+                      //                                               ));
+                      //                                   setState(() {
+                      //                                     isLoaded = true;
+                      //                                   });
+                      //                                 });
+                      //                               } else {
+                      //                                 await showDialog(
+                      //                                     context: context,
+                      //                                     builder: (context) =>
+                      //                                         AlertDialog(
+                      //                                           title: Text(
+                      //                                               "This Group Name already exist. Please enter another name."),
+                      //                                           actions: [
+                      //                                             FlatButton(
+                      //                                               child: Text(
+                      //                                                   "Ok"),
+                      //                                               onPressed:
+                      //                                                   () {
+                      //                                                 setState(
+                      //                                                     () {
+                      //                                                   isLoaded =
+                      //                                                       true;
+                      //                                                 });
+                      //                                                 Navigator.pop(
+                      //                                                     context);
+                      //                                               },
+                      //                                             )
+                      //                                           ],
+                      //                                         ));
+                      //                               }
+                      //                             }
+                      //                           },
+                      //                         ),
+                      //                       )
+                      //                     ],
+                      //                   ),
+                      //                 ),
+                      //               ));
+                      //     },
+                      //   ),
+                      // ),
                       SizedBox(
                         height: height * 0.03,
                       ),

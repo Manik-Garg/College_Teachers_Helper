@@ -64,6 +64,7 @@ class _RegisterState extends State<Register> {
             ? SingleChildScrollView(
                 child: Column(
                   children: [
+                    SizedBox(height: height*0.06,),
                     Form(
                       key: formKey,
                       child: Column(

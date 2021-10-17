@@ -3,8 +3,11 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:teacher_helper/assignment.dart';
+import 'package:teacher_helper/comments.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class Uploads extends StatefulWidget {
@@ -27,7 +30,13 @@ class _UploadsState extends State<Uploads> {
   String uploadedUrl;
   List<dynamic> uploads = [];
   String type;
-  List<dynamic> categories = ["Assignment", "Notice", "Marks", "Attendance"];
+  List<dynamic> categories = [
+    "Assignment",
+    "Notice",
+    "Marks",
+    "Attendance",
+    "Video Lecture"
+  ];
 
   @override
   void initState() {
@@ -60,229 +69,158 @@ class _UploadsState extends State<Uploads> {
                         shape: RoundedRectangleBorder(
                             borderRadius:
                                 BorderRadius.all(Radius.circular(20.0))),
-                        child: Container(
-                          height: height * 0.6,
-                          width: width * 0.8,
-                          decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(20))),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Container(
-                                decoration: BoxDecoration(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(20)),
-                                  border: Border.all(
-                                      color: Colors.indigo[500], width: 2),
-                                  color: Colors.white,
-                                ),
-                                padding: EdgeInsets.all(10),
-                                child: TextField(
-                                  onChanged: (value) {
-                                    setState(() {
-                                      Topic = value;
-                                    });
-                                  },
-                                  keyboardType: TextInputType.emailAddress,
-                                  decoration: InputDecoration(
-                                    hintText: 'Enter Topic',
-                                    border: InputBorder.none,
+                        child: StatefulBuilder(
+                          builder: (context, setstate) => Container(
+                            height: height * 0.6,
+                            width: width * 0.8,
+                            decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(20))),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(20)),
+                                    border: Border.all(
+                                        color: Colors.indigo[500], width: 2),
+                                    color: Colors.white,
                                   ),
-                                ),
-                                width: width * 0.75,
-                              ),
-                              SizedBox(
-                                height: 15,
-                              ),
-                              Container(
-                                decoration: BoxDecoration(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(20)),
-                                  border: Border.all(
-                                      color: Colors.indigo[500], width: 2),
-                                  color: Colors.white,
-                                ),
-                                padding: EdgeInsets.all(10),
-                                child: PopupMenuButton(
-                                  onSelected: (value) {
-                                    setState(() {
-                                      type = value;
-                                    });
-                                  },
-                                  child: Center(
-                                    child: Text("Select type"),
-                                  ),
-                                  itemBuilder: (context) {
-                                    return List.generate(categories.length,
-                                        (index) {
-                                      return PopupMenuItem(
-                                        child: Text(categories[index]),
-                                        value: categories[index],
-                                      );
-                                    });
-                                  },
-                                ),
-                                width: width * 0.75,
-                              ),
-                              SizedBox(
-                                height: 15,
-                              ),
-                              Container(
-                                decoration: BoxDecoration(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(20)),
-                                  border: Border.all(
-                                      color: Colors.indigo[500], width: 2),
-                                  color: Colors.white,
-                                ),
-                                padding: EdgeInsets.all(10),
-                                child: FlatButton(
-                                    child: Text(
-                                      "Set due date & time",
-                                      style: TextStyle(fontSize: 20),
+                                  padding: EdgeInsets.all(10),
+                                  child: TextField(
+                                    onChanged: (value) {
+                                      setState(() {
+                                        Topic = value;
+                                      });
+                                    },
+                                    keyboardType: TextInputType.emailAddress,
+                                    decoration: InputDecoration(
+                                      hintText: 'Enter Topic',
+                                      border: InputBorder.none,
                                     ),
-                                    onPressed: () async {
-                                      var date = await showDatePicker(
-                                          context: context,
-                                          initialDate: DateTime.now(),
-                                          firstDate: DateTime.now(),
-                                          lastDate: DateTime.now()
-                                              .add(Duration(days: 30)));
-                                      if (date != null) {
-                                        setState(() {
-                                          dueDate = date;
-                                        });
-                                        var time = await showTimePicker(
+                                  ),
+                                  width: width * 0.75,
+                                ),
+                                SizedBox(
+                                  height: 15,
+                                ),
+                                Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(20)),
+                                    border: Border.all(
+                                        color: Colors.indigo[500], width: 2),
+                                    color: Colors.white,
+                                  ),
+                                  padding: EdgeInsets.all(10),
+                                  child: PopupMenuButton(
+                                    onSelected: (value) {
+                                      setState(() {
+                                        type = value;
+                                      });
+                                      setstate(() {
+                                        type = value;
+                                      });
+                                    },
+                                    child: Center(
+                                      child: Text(
+                                        type == "" ? "Select type" : type,
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                    itemBuilder: (context) {
+                                      return List.generate(categories.length,
+                                          (index) {
+                                        return PopupMenuItem(
+                                          child: Text(categories[index]),
+                                          value: categories[index],
+                                        );
+                                      });
+                                    },
+                                  ),
+                                  width: width * 0.75,
+                                ),
+                                SizedBox(
+                                  height: 15,
+                                ),
+                                Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(20)),
+                                    border: Border.all(
+                                        color: Colors.indigo[500], width: 2),
+                                    color: Colors.white,
+                                  ),
+                                  padding: EdgeInsets.all(10),
+                                  child: FlatButton(
+                                      child: Text(
+                                        dueDate == null
+                                            ? "Set due date & time"
+                                            : "Due: " +
+                                                DateFormat("dd/MMM/yyyy hh:mm")
+                                                    .format(dueDate),
+                                        style: TextStyle(fontSize: 20),
+                                      ),
+                                      onPressed: () async {
+                                        var date = await showDatePicker(
                                             context: context,
-                                            initialTime: TimeOfDay(
-                                                hour: 00, minute: 00));
-                                        if (time != null) {
+                                            initialDate: DateTime.now(),
+                                            firstDate: DateTime.now(),
+                                            lastDate: DateTime.now()
+                                                .add(Duration(days: 30)));
+                                        if (date != null) {
                                           setState(() {
-                                            dueTime = time;
-                                            finalDate = Timestamp.fromDate(
-                                                DateTime(
-                                                    DateTime.now().year,
-                                                    dueDate.month,
-                                                    dueDate.day,
-                                                    dueTime.hour,
-                                                    dueTime.minute));
+                                            dueDate = date;
                                           });
+                                          setstate(() {
+                                            dueDate = date;
+                                          });
+                                          var time = await showTimePicker(
+                                              context: context,
+                                              initialTime: TimeOfDay(
+                                                  hour: 00, minute: 00));
+                                          if (time != null) {
+                                            setState(() {
+                                              dueTime = time;
+                                              finalDate = Timestamp.fromDate(
+                                                  DateTime(
+                                                      DateTime.now().year,
+                                                      dueDate.month,
+                                                      dueDate.day,
+                                                      dueTime.hour,
+                                                      dueTime.minute));
+                                            });
+                                          } else {
+                                            setState(() {
+                                              finalDate = null;
+                                            });
+                                          }
                                         } else {
                                           setState(() {
                                             finalDate = null;
                                           });
                                         }
-                                      } else {
-                                        setState(() {
-                                          finalDate = null;
-                                        });
-                                      }
-                                    }),
-                                width: width * 0.75,
-                              ),
-                              SizedBox(
-                                height: 15,
-                              ),
-                              Container(
-                                width: width * 0.75,
-                                decoration: BoxDecoration(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(20)),
-                                  color: Colors.indigo[300],
+                                      }),
+                                  width: width * 0.75,
                                 ),
-                                padding: EdgeInsets.all(5),
-                                child: FlatButton(
-                                  child: Text(
-                                    "Add File & upload",
-                                    style: TextStyle(fontSize: 20),
+                                SizedBox(
+                                  height: 15,
+                                ),
+                                Container(
+                                  width: width * 0.75,
+                                  decoration: BoxDecoration(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(20)),
+                                    color: Colors.indigo[300],
                                   ),
-                                  onPressed: () async {
-                                    Navigator.pop(context);
-                                    setState(() {
-                                      isLoaded = false;
-                                    });
-                                    FilePickerResult result =
-                                        await FilePicker.platform.pickFiles();
-
-                                    if (result != null) {
-                                      setState(() {
-                                        isLoaded = false;
-                                      });
-                                      File file =
-                                          File(result.files.single.path);
-                                      String filename = DateTime.now()
-                                          .microsecondsSinceEpoch
-                                          .toString();
-                                      var downloadUrl = await FirebaseStorage
-                                          .instance
-                                          .ref()
-                                          .child(
-                                              "${widget.teacherID}/${widget.groupName}/$filename")
-                                          .putFile(file);
-                                      String url = await downloadUrl.ref
-                                          .getDownloadURL();
-                                      setState(() {
-                                        uploadedUrl = url;
-                                      });
-
-                                      var data = await FirebaseFirestore
-                                          .instance
-                                          .collection("items")
-                                          .doc("classes")
-                                          .get()
-                                          .then((value) => value.data());
-                                      List<dynamic> classes = data["classes"];
-                                      int index;
-                                      for (int i = 0; i < classes.length; i++) {
-                                        if (classes[i]["groupName"] ==
-                                                widget.groupName &&
-                                            classes[i]["teacherID"] ==
-                                                widget.teacherID) {
-                                          index = i;
-                                          break;
-                                        }
-                                      }
-                                      uploads.insert(0, {
-                                        "content": Topic,
-                                        "dueDate": finalDate,
-                                        "link": uploadedUrl,
-                                        "type": type,
-                                        "submissions": [],
-                                        "uploadTime":
-                                            Timestamp.fromDate(DateTime.now())
-                                      });
-                                      classes[index]["uploads"] = uploads;
-                                      await FirebaseFirestore.instance
-                                          .collection("items")
-                                          .doc("classes")
-                                          .update({
-                                        "classes": classes
-                                      }).whenComplete(() {
-                                        setState(() {
-                                          isLoaded = true;
-                                        });
-                                      });
-                                    }
-                                  },
-                                ),
-                              ),
-                              SizedBox(
-                                height: 15,
-                              ),
-                              Container(
-                                width: width * 0.75,
-                                decoration: BoxDecoration(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(20)),
-                                  color: Colors.indigo[300],
-                                ),
-                                padding: EdgeInsets.all(5),
-                                child: FlatButton(
+                                  padding: EdgeInsets.all(5),
+                                  child: FlatButton(
                                     child: Text(
-                                      "Upload without File",
+                                      "Add File & upload",
                                       style: TextStyle(fontSize: 20),
                                     ),
                                     onPressed: () async {
@@ -290,45 +228,146 @@ class _UploadsState extends State<Uploads> {
                                       setState(() {
                                         isLoaded = false;
                                       });
-                                      var data = await FirebaseFirestore
-                                          .instance
-                                          .collection("items")
-                                          .doc("classes")
-                                          .get()
-                                          .then((value) => value.data());
-                                      List<dynamic> classes = data["classes"];
-                                      int index;
-                                      for (int i = 0; i < classes.length; i++) {
-                                        if (classes[i]["groupName"] ==
-                                                widget.groupName &&
-                                            classes[i]["teacherID"] ==
-                                                widget.teacherID) {
-                                          index = i;
-                                          break;
-                                        }
+                                      FilePickerResult result;
+                                      if (type == "Video Lecture") {
+                                        result = await FilePicker.platform
+                                            .pickFiles(
+                                                type: FileType.video,
+                                                allowMultiple: false);
+                                      } else {
+                                        result = await FilePicker.platform
+                                            .pickFiles(allowMultiple: false);
                                       }
-                                      uploads.insert(0, {
-                                        "content": Topic,
-                                        "link": "",
-                                        "type": type,
-                                        "dueDate": finalDate,
-                                        "uploadTime":
-                                            Timestamp.fromDate(DateTime.now())
-                                      });
-                                      classes[index]["uploads"] = uploads;
-                                      await FirebaseFirestore.instance
-                                          .collection("items")
-                                          .doc("classes")
-                                          .update({
-                                        "classes": classes
-                                      }).whenComplete(() {
+                                      if (result != null) {
+                                        setState(() {
+                                          isLoaded = false;
+                                        });
+                                        File file =
+                                            File(result.files.single.path);
+                                        String filename = Topic;
+                                        var downloadUrl = await FirebaseStorage
+                                            .instance
+                                            .ref()
+                                            .child(
+                                                "${widget.teacherID}/${widget.groupName}/$filename")
+                                            .putFile(file);
+                                        String url = await downloadUrl.ref
+                                            .getDownloadURL();
+                                        setState(() {
+                                          uploadedUrl = url;
+                                        });
+                                        var data = await FirebaseFirestore
+                                            .instance
+                                            .collection("items")
+                                            .doc("classes")
+                                            .get()
+                                            .then((value) => value.data());
+                                        List<dynamic> classes = data["classes"];
+                                        int index;
+                                        for (int i = 0;
+                                            i < classes.length;
+                                            i++) {
+                                          if (classes[i]["groupName"] ==
+                                                  widget.groupName &&
+                                              classes[i]["teacherID"] ==
+                                                  widget.teacherID) {
+                                            index = i;
+                                            break;
+                                          }
+                                        }
+                                        uploads.insert(0, {
+                                          "content": Topic,
+                                          "dueDate": finalDate,
+                                          "link": uploadedUrl,
+                                          "type": type,
+                                          "comments": [],
+                                          "submissions": [],
+                                          "uploadTime":
+                                              Timestamp.fromDate(DateTime.now())
+                                        });
+                                        classes[index]["uploads"] = uploads;
+                                        await FirebaseFirestore.instance
+                                            .collection("items")
+                                            .doc("classes")
+                                            .update({
+                                          "classes": classes
+                                        }).whenComplete(() {
+                                          setState(() {
+                                            isLoaded = true;
+                                          });
+                                        });
+                                      } else {
                                         setState(() {
                                           isLoaded = true;
                                         });
-                                      });
-                                    }),
-                              )
-                            ],
+                                      }
+                                    },
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 15,
+                                ),
+                                Container(
+                                  width: width * 0.75,
+                                  decoration: BoxDecoration(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(20)),
+                                    color: Colors.indigo[300],
+                                  ),
+                                  padding: EdgeInsets.all(5),
+                                  child: FlatButton(
+                                      child: Text(
+                                        "Upload without File",
+                                        style: TextStyle(fontSize: 20),
+                                      ),
+                                      onPressed: () async {
+                                        Navigator.pop(context);
+                                        setState(() {
+                                          isLoaded = false;
+                                        });
+                                        var data = await FirebaseFirestore
+                                            .instance
+                                            .collection("items")
+                                            .doc("classes")
+                                            .get()
+                                            .then((value) => value.data());
+                                        List<dynamic> classes = data["classes"];
+                                        int index;
+                                        for (int i = 0;
+                                            i < classes.length;
+                                            i++) {
+                                          if (classes[i]["groupName"] ==
+                                                  widget.groupName &&
+                                              classes[i]["teacherID"] ==
+                                                  widget.teacherID) {
+                                            index = i;
+                                            break;
+                                          }
+                                        }
+                                        uploads.insert(0, {
+                                          "content": Topic,
+                                          "link": "",
+                                          "type": type,
+                                          "comments": [],
+                                          "dueDate": finalDate,
+                                          "uploadTime":
+                                              Timestamp.fromDate(DateTime.now())
+                                        });
+                                        classes[index]["uploads"] = uploads;
+                                        await FirebaseFirestore.instance
+                                            .collection("items")
+                                            .doc("classes")
+                                            .update({
+                                          "classes": classes
+                                        }).whenComplete(() {
+                                          setState(() {
+                                            isLoaded = true;
+                                          });
+                                        });
+                                      }),
+                                )
+                              ],
+                            ),
                           ),
                         ),
                       ));
@@ -369,14 +408,25 @@ class _UploadsState extends State<Uploads> {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => Assignments(
-                                            groupName: widget.groupName,
-                                            teacherID: widget.teacherID,
-                                            assignmentName: widget.uploads[i]
-                                                ["content"],
-                                            assignmentUrl: widget.uploads[i]
-                                                ["link"],
-                                          )));
+                                      builder: (context) => widget.uploads[i]
+                                                  ["type"] ==
+                                              "Video Lecture"
+                                          ? Comments(
+                                              groupName: widget.groupName,
+                                              teacherID: widget.teacherID,
+                                              assignmentName: widget.uploads[i]
+                                                  ["content"],
+                                              assignmentUrl: widget.uploads[i]
+                                                  ["link"],
+                                            )
+                                          : Assignments(
+                                              groupName: widget.groupName,
+                                              teacherID: widget.teacherID,
+                                              assignmentName: widget.uploads[i]
+                                                  ["content"],
+                                              assignmentUrl: widget.uploads[i]
+                                                  ["link"],
+                                            )));
                             },
                             trailing: IconButton(
                               onPressed: () async {

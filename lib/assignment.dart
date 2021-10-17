@@ -23,6 +23,7 @@ class Assignments extends StatefulWidget {
 class _AssignmentsState extends State<Assignments> {
   bool isLoaded = false;
   List<dynamic> assignments = [];
+  List<dynamic> comments = [];
 
   Future<bool> fetch() async {
     String teacherEmail = FirebaseAuth.instance.currentUser.email;
@@ -33,6 +34,7 @@ class _AssignmentsState extends State<Assignments> {
         .then((value) => value.data());
     List<dynamic> classes = data["classes"];
     List<dynamic> a = [];
+    List<dynamic> cmnts = [];
 
     classes.forEach((element) {
       if (element["teacherID"] == widget.teacherID &&
@@ -42,12 +44,14 @@ class _AssignmentsState extends State<Assignments> {
           if (e["type"] == "Assignment" &&
               e["content"] == widget.assignmentName) {
             a = e["submissions"];
+            cmnts = e["comments"];
           }
         });
       }
     });
     setState(() {
       assignments = a;
+      comments = cmnts;
     });
     return true;
   }
@@ -71,6 +75,15 @@ class _AssignmentsState extends State<Assignments> {
       appBar: AppBar(
         title: Text("Submissions"),
         centerTitle: true,
+        actions: [
+          IconButton(
+            icon: Icon(
+              Icons.message_outlined,
+              color: Colors.white,
+            ),
+            onPressed: () {},
+          )
+        ],
       ),
       body: Container(
         height: height,
@@ -113,35 +126,47 @@ class _AssignmentsState extends State<Assignments> {
                             padding: const EdgeInsets.all(8.0),
                             child: Row(
                               children: [
-                                Expanded(child: Text("Topic: ",style: TextStyle(fontSize: 20),)),
-                                Expanded(child: Text(widget.assignmentName,style: TextStyle(fontSize: 20,color: Colors.blue[700]))),
+                                Expanded(
+                                    child: Text(
+                                  "Topic: ",
+                                  style: TextStyle(fontSize: 20),
+                                )),
+                                Expanded(
+                                    child: Text(widget.assignmentName,
+                                        style: TextStyle(
+                                            fontSize: 20,
+                                            color: Colors.blue[700]))),
                               ],
                             ),
                           )),
-                       Expanded(
-                          flex: 1,
-                          child: RichText(
-                            text: TextSpan(
-                              children: [
-                                TextSpan(
-                                    text: 'To Download Assignment ',
-                                    style: TextStyle(
-                                        fontSize: 20, color: Colors.red,)),
-                                TextSpan(
-                                    text: 'click here',
-                                    style: TextStyle(
-                                        fontSize: 20,
-                                        color: Colors.blue,
-                                        decoration: TextDecoration.underline),
-                                    recognizer: TapGestureRecognizer()
-                                      ..onTap = () {
-                                        launch(widget.assignmentUrl);
-                                      })
-                              ],
-                            ),
+                      Expanded(
+                        flex: 1,
+                        child: RichText(
+                          text: TextSpan(
+                            children: [
+                              TextSpan(
+                                  text: 'To Download Assignment ',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    color: Colors.red,
+                                  )),
+                              TextSpan(
+                                  text: 'click here',
+                                  style: TextStyle(
+                                      fontSize: 20,
+                                      color: Colors.blue,
+                                      decoration: TextDecoration.underline),
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = () {
+                                      launch(widget.assignmentUrl);
+                                    })
+                            ],
+                          ),
                         ),
                       ),
-                      SizedBox(height: 20,),
+                      SizedBox(
+                        height: 20,
+                      ),
                       Expanded(
                         flex: 15,
                         child: ListView.builder(
