@@ -22,6 +22,7 @@ class _GroupsState extends State<Groups> {
         .get()
         .then((value) => value.data());
     List<dynamic> classes = data["classes"];
+    groups.clear();
     classes.forEach((element) {
       if (element["teacherID"] == teacherEmail) {
         groups.add(element);
@@ -186,9 +187,6 @@ class _GroupsState extends State<Groups> {
                                                       )
                                                     ],
                                                   ));
-                                          setState(() {
-                                            isLoaded = true;
-                                          });
                                         });
                                       } else {
                                         await showDialog(
@@ -210,6 +208,12 @@ class _GroupsState extends State<Groups> {
                                                 ));
                                       }
                                     }
+                                    fetch().whenComplete(() {
+                                      setState(() {
+                                        isLoaded = true;
+                                      });
+                                    });
+                                    Navigator.pop(context);
                                   },
                                 ),
                               )

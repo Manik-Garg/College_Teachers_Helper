@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:teacher_helper/TnPSection.dart';
 import 'package:teacher_helper/devpage.dart';
 import 'package:teacher_helper/groups.dart';
 import 'package:teacher_helper/notes.dart';
@@ -495,6 +496,29 @@ class _HomeState extends State<Home> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => Notes()));
+                          },
+                        ),
+                      ),
+                      SizedBox(
+                        height: height * 0.03,
+                      ),
+                      Container(
+                        height: height * 0.08,
+                        width: width * 0.8,
+                        padding: EdgeInsets.all(5),
+                        decoration: BoxDecoration(
+                            color: Colors.grey[500],
+                            border: Border.all(color: Colors.black, width: 2.0),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(20))),
+                        child: FlatButton(
+                          child: Text(
+                            "T&P Section",
+                            style: TextStyle(fontSize: 20),
+                          ),
+                          onPressed: () {
+                            Navigator.push(context,
+                                MaterialPageRoute(builder: (context) => TnP()));
                           },
                         ),
                       ),
