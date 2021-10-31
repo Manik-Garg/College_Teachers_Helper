@@ -200,6 +200,7 @@ class _GroupsState extends State<Groups> {
                                                       onPressed: () {
                                                         setState(() {
                                                           isLoaded = true;
+
                                                         });
                                                         Navigator.pop(context);
                                                       },

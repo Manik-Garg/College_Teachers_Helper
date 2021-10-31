@@ -188,6 +188,7 @@ class _AddOpportunityState extends State<AddOpportunity> {
                               color: Colors.white,
                             ),
                             padding: EdgeInsets.all(5),
+
                             child: FlatButton(
                                 child: Text(
                                   finalDate == null

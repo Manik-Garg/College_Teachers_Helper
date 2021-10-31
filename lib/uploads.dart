@@ -360,6 +360,7 @@ class _UploadsState extends State<Uploads> {
                                             .update({
                                           "classes": classes
                                         }).whenComplete(() {
+                                          
                                           setState(() {
                                             isLoaded = true;
                                           });
