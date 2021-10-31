@@ -8,6 +8,10 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class TnP extends StatefulWidget {
+  final bool fromTPO;
+
+  const TnP({@required this.fromTPO});
+
   @override
   _TnPState createState() => _TnPState();
 }
@@ -242,7 +246,7 @@ class _TnPState extends State<TnP> {
                           child: ListTile(
                             title: Text(items[i]["companyName"]),
                             subtitle: Text(
-                                "Uploaded: ${(items[i]["uploadTime"] as Timestamp).toDate().day}/${(items[i]["uploadTime"] as Timestamp).toDate().month}/${(items[i]["uploadTime"] as Timestamp).toDate().year}  ${(items[i]["uploadTime"] as Timestamp).toDate().hour}:${(items[i]["uploadTime"] as Timestamp).toDate().minute}"),
+                                "Deadline: ${(items[i]["deadline"] as Timestamp).toDate().day}/${(items[i]["deadline"] as Timestamp).toDate().month}/${(items[i]["deadline"] as Timestamp).toDate().year}  ${(items[i]["deadline"] as Timestamp).toDate().hour}:${(items[i]["deadline"] as Timestamp).toDate().minute}"),
                             onTap: () {},
                           ));
                     },
