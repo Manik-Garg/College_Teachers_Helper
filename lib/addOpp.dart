@@ -9,8 +9,7 @@ class AddOpportunity extends StatefulWidget {
 }
 
 class _AddOpportunityState extends State<AddOpportunity> {
-  String _cname;
-  String description, roles;
+  String _cname = "", description = "", roles = "",location="";
   DateTime deadline, finalDate;
   TimeOfDay dueTime;
   String eligibility = "", links = "";
@@ -178,6 +177,19 @@ class _AddOpportunityState extends State<AddOpportunity> {
                           SizedBox(
                             height: 10,
                           ),
+                          textField(
+                              width: 0.85 * width,
+                              warning: "Location can't be empty",
+                              label: "Location",
+                              func: (String value) {
+                                setState(() {
+                                  location = value;
+                                });
+                              },
+                              textInputType: TextInputType.emailAddress),
+                          SizedBox(
+                            height: 10,
+                          ),
                           Container(
                             width: width * 0.85,
                             decoration: BoxDecoration(
@@ -188,7 +200,6 @@ class _AddOpportunityState extends State<AddOpportunity> {
                               color: Colors.white,
                             ),
                             padding: EdgeInsets.all(5),
-
                             child: FlatButton(
                                 child: Text(
                                   finalDate == null
@@ -237,7 +248,7 @@ class _AddOpportunityState extends State<AddOpportunity> {
                                   color: Colors.red[400]),
                               child: FlatButton(
                                 onPressed: () async {
-                                  if (validateAndSave()) {
+                                  if (validateAndSave() && finalDate != null) {
                                     setState(() {
                                       isLoaded = false;
                                     });
@@ -257,6 +268,7 @@ class _AddOpportunityState extends State<AddOpportunity> {
                                       "roles": roles,
                                       "description": description,
                                       "links": links,
+                                      "location": location,
                                       "deadline": Timestamp.fromDate(finalDate),
                                       "eligibility": eligibility
                                     });

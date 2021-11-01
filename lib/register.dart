@@ -64,7 +64,9 @@ class _RegisterState extends State<Register> {
             ? SingleChildScrollView(
                 child: Column(
                   children: [
-                    SizedBox(height: height*0.06,),
+                    SizedBox(
+                      height: height * 0.06,
+                    ),
                     Form(
                       key: formKey,
                       child: Column(
@@ -110,12 +112,11 @@ class _RegisterState extends State<Register> {
                             width: 0.8 * MediaQuery.of(context).size.width,
                             decoration: BoxDecoration(
                               borderRadius:
-                              BorderRadius.all(Radius.circular(20)),
+                                  BorderRadius.all(Radius.circular(20)),
                               border:
-                              Border.all(color: Colors.grey[500], width: 2),
+                                  Border.all(color: Colors.grey[500], width: 2),
                               color: Colors.white,
                             ),
-
                             child: Padding(
                               padding: const EdgeInsets.all(5.0),
                               child: TextFormField(
@@ -143,9 +144,9 @@ class _RegisterState extends State<Register> {
                             width: 0.8 * MediaQuery.of(context).size.width,
                             decoration: BoxDecoration(
                               borderRadius:
-                              BorderRadius.all(Radius.circular(20)),
+                                  BorderRadius.all(Radius.circular(20)),
                               border:
-                              Border.all(color: Colors.grey[500], width: 2),
+                                  Border.all(color: Colors.grey[500], width: 2),
                               color: Colors.white,
                             ),
                             child: Padding(
@@ -178,9 +179,9 @@ class _RegisterState extends State<Register> {
                             width: 0.8 * MediaQuery.of(context).size.width,
                             decoration: BoxDecoration(
                               borderRadius:
-                              BorderRadius.all(Radius.circular(20)),
+                                  BorderRadius.all(Radius.circular(20)),
                               border:
-                              Border.all(color: Colors.grey[500], width: 2),
+                                  Border.all(color: Colors.grey[500], width: 2),
                               color: Colors.white,
                             ),
                             child: Padding(
@@ -211,9 +212,9 @@ class _RegisterState extends State<Register> {
                             width: 0.8 * MediaQuery.of(context).size.width,
                             decoration: BoxDecoration(
                               borderRadius:
-                              BorderRadius.all(Radius.circular(20)),
+                                  BorderRadius.all(Radius.circular(20)),
                               border:
-                              Border.all(color: Colors.grey[500], width: 2),
+                                  Border.all(color: Colors.grey[500], width: 2),
                               color: Colors.white,
                             ),
                             child: Padding(
@@ -266,12 +267,13 @@ class _RegisterState extends State<Register> {
                                               .doc(value.user.email)
                                               .set({
                                             "name": _name,
+                                            "fromTPO": false,
                                             "email": _email,
                                             "password": _password,
                                             "contact": _phonenum,
                                             "groups": [],
                                             "uploads": [],
-                                            "notes":[]
+                                            "notes": []
                                           }).whenComplete(() {
                                             Navigator.of(context)
                                                 .pushAndRemoveUntil(

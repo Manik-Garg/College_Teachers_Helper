@@ -1,17 +1,9 @@
-import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:teacher_helper/editOpportunity.dart';
 
 class TnP extends StatefulWidget {
-  final bool fromTPO;
-
-  const TnP({@required this.fromTPO});
-
   @override
   _TnPState createState() => _TnPState();
 }
@@ -245,9 +237,47 @@ class _TnPState extends State<TnP> {
                           margin: EdgeInsets.only(top: 8),
                           child: ListTile(
                             title: Text(items[i]["companyName"]),
+                            trailing: IconButton(
+                              onPressed: () async {
+                                Navigator.of(context)
+                                    .push(MaterialPageRoute(
+                                        builder: (context) => EditOpportunity(
+                                              eligibility: items[i]
+                                                  ["eligibility"],
+                                              links: items[i]["links"],
+                                              description: items[i]
+                                                  ["description"],
+                                              roles: items[i]["roles"],
+                                              finalDate: (items[i]["deadline"]
+                                                      as Timestamp)
+                                                  .toDate(),
+                                              ctc: items[i]["ctc"],
+                                              cname: items[i]["companyName"],
+                                              locations: items[i]["location"],
+                                              index: i,
+                                              openings: items,
+                                              fromTPO: fromTPO,
+                                            )))
+                                    .whenComplete(() async {
+                                  setState(() {
+                                    isLoaded = false;
+                                  });
+                                  await fetch().whenComplete(() {
+                                    setState(() {
+                                      isLoaded = true;
+                                    });
+                                  });
+                                });
+                              },
+                              icon: Icon(
+                                fromTPO
+                                    ? Icons.edit
+                                    : Icons.remove_red_eye_outlined,
+                                color: Colors.deepPurpleAccent,
+                              ),
+                            ),
                             subtitle: Text(
                                 "Deadline: ${(items[i]["deadline"] as Timestamp).toDate().day}/${(items[i]["deadline"] as Timestamp).toDate().month}/${(items[i]["deadline"] as Timestamp).toDate().year}  ${(items[i]["deadline"] as Timestamp).toDate().hour}:${(items[i]["deadline"] as Timestamp).toDate().minute}"),
-                            onTap: () {},
                           ));
                     },
                   )
