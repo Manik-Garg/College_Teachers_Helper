@@ -202,6 +202,11 @@ class _RegisterState extends State<Register> {
                                     _password = value;
                                   });
                                 },
+                                onChanged: (value){
+                                  setState(() {
+                                    _password = value;
+                                  });
+                                },
                               ),
                             ),
                           ),
@@ -231,6 +236,11 @@ class _RegisterState extends State<Register> {
                                       : null;
                                 },
                                 onSaved: (String value) {
+                                  setState(() {
+                                    cnfrm = value;
+                                  });
+                                },
+                                onChanged: (String value) {
                                   setState(() {
                                     cnfrm = value;
                                   });
