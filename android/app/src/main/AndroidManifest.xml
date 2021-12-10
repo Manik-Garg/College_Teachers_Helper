@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.ymca.teacher_helper">
    <application
-        android:label="College Teacher's App"
+        android:label="eTeaching App"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
